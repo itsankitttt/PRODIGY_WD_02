@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+    <style>
+        body {
+    
+}
+
+.stopwatch {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: rgb(11, 11, 11);
+    color: rgb(124, 165, 42);
+    text-align: center;
+}
+
+#display {
+    font-size: 2em;
+    margin: 10px 0;
+}
+
+button {
+    margin: 5px;
+    padding: 5px 10px;
+    font-size: 1em;
+}
+
+#laps {
+    list-style: none;
+    padding: 0;
+}
+
+    </style>
+    <title>Stopwatch App</title>
+</head>
+<body>
+    <h1 style="text-align: center; font: size 20px; color: rgb(211, 131, 56);">Stopwatch</h1>
+    <script > 
+    let stopwatch;
+let laps = [];
+let isRunning = false;
+let startTime;
+let elapsedTime = 0;
+
+function startStopwatch() {
+    if (!isRunning) {
+        isRunning = true;
+        startTime = new Date().getTime() - elapsedTime;
+        stopwatch = setInterval(updateDisplay, 1000);
+    }
+}
+
+function pauseStopwatch() {
+    if (isRunning) {
+        clearInterval(stopwatch);
+        isRunning = false;
+        elapsedTime = new Date().getTime() - startTime;
+    }
+}
+
+function resetStopwatch() {
+    clearInterval(stopwatch);
+    isRunning = false;
+    startTime = new Date().getTime();
+    elapsedTime = 0;
+    laps = [];
+    updateDisplay();
+    updateLaps();
+}
+
+function updateDisplay() {
+    const display = document.getElementById("display");
+    const currentTime = new Date().getTime();
+    elapsedTime = currentTime - startTime;
+    const formattedTime = formatTime(elapsedTime);
+    display.textContent = formattedTime;
+}
+
+function formatTime(milliseconds) {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, "0");
+    const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, "0");
+    const seconds = (totalSeconds % 60).toString().padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+}
+
+function lap() {
+    const time = formatTime(elapsedTime);
+    laps.push(time);
+    updateLaps();
+}
+
+function updateLaps() {
+    const lapsList = document.getElementById("laps");
+    lapsList.innerHTML = "";
+    laps.forEach((lap, index) => {
+        const li = document.createElement("li");
+        li.textContent = `Lap ${index + 1}: ${lap}`;
+        lapsList.appendChild(li);
+    });
+}
+
+    </script>
+
+    <div class="stopwatch">
+        <div id="display">00:00:00</div>
+        <button onclick="startStopwatch()">Start</button>
+        <button onclick="pauseStopwatch()">Pause</button>
+        <button onclick="resetStopwatch()">Reset</button>
+        <button onclick="lap()">Lap</button>
+        <ul id="laps"></ul>
+    </div>
+    
+</body>
+</html>
